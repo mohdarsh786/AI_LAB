@@ -1,0 +1,70 @@
+from collections import deque
+
+# 0 = free cell, 1 = obstacle
+grid = [
+    [0, 0, 0, 0],
+    [1, 1, 0, 1],
+    [0, 0, 0, 0],
+    [0, 1, 1, 0]
+]
+
+rows = len(grid)
+cols = len(grid[0])
+
+start = (0, 0)  # Top-left corner
+goal = (3, 3)   # Bottom-right corner
+
+# Moves: up, down, left, right
+directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+
+def is_valid(x, y, visited):
+    return 0 <= x < rows and 0 <= y < cols and grid[x][y] == 0 and not visited[x][y]
+
+def dfs(grid, start, goal):
+    rows, cols = len(grid), len(grid[0])
+    directions = [(-1, 0), (1, 0), (0, -1), (0, 1)]
+    visited = [[False] * cols for _ in range(rows)]
+    stack = deque([(start, [start])])
+
+    while queue:
+        (x, y), path = queue.popleft()
+        if (x, y) == goal:
+            return path
+
+        for dx, dy in directions:
+            nx, ny = x + dx, y + dy
+            if 0 <= nx < rows and 0 <= ny < cols and not visited[nx][ny] and grid[nx][ny] == 0:
+                visited[nx][ny] = True
+                queue.append(((nx, ny), path + [(nx, ny)]))
+
+    return None
+
+def print_grid_with_path(path, title):
+    print(f"\n{title}")
+    for i in range(rows):
+        for j in range(cols):
+            if (i, j) == start:
+                print("S", end=" ")
+            elif (i, j) == goal:
+                print("G", end=" ")
+            elif path and (i, j) in path:
+                print("*", end=" ")
+            elif grid[i][j] == 1:
+                print("]", end=" ")
+            else:
+                print(".", end=" ")
+        print()
+
+# Print initial grid
+print("\nInitial Grid:")
+for row in grid:
+    print(" ".join(str(cell) for cell in row))
+
+# Run bfs
+bfs_path = bfs(grid, start, goal)
+
+if bfs_path:
+    print("\nbfs Path Found:", bfs_path)
+    print_grid_with_path(bfs_path, "bfs Path in Grid:")
+else:
+    print("\nbfs: No path found.")
